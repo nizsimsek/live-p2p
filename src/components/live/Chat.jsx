@@ -1,26 +1,14 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { Link, MoreVertical, Send } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 
-const Chat = ({ myId, messages, sendMessage, message, setMessage }) => {
+const Chat = ({ messages, sendMessage, message, setMessage }) => {
   const { toast } = useToast();
 
   return (
@@ -58,10 +46,7 @@ const Chat = ({ myId, messages, sendMessage, message, setMessage }) => {
                     });
                 }}
               >
-                <Button
-                  variant="ghost"
-                  className="h-auto p-0 hover:cursor-copy"
-                >
+                <Button variant="ghost" className="h-auto p-0 hover:cursor-copy">
                   <Link className="h-4 w-4 mr-2" />
                   Davet linkini kopyala
                 </Button>
@@ -72,34 +57,17 @@ const Chat = ({ myId, messages, sendMessage, message, setMessage }) => {
       </CardHeader>
       <CardContent className="flex flex-auto w-full overflow-y-auto py-0 px-4">
         <ScrollArea className="w-full h-full">
-          {messages?.map((message, index) => {
+          {messages?.map((msg, index) => {
             return (
               <React.Fragment key={index}>
                 <div className="flex gap-2 items-center">
-                  {message?.user?.id === messages[index - 1]?.user?.id ? (
-                    <div className="w-8"></div>
-                  ) : (
-                    <img
-                      src={message?.user?.avatar}
-                      alt={message?.user?.firstName}
-                      className="w-8 h-8 rounded-full"
-                    />
-                  )}
+                  {msg?.user?.id === messages[index - 1]?.user?.id ? <div className="w-8"></div> : <img src={msg?.user?.avatar} alt={msg?.user?.firstName} className="w-8 h-8 rounded-full" />}
                   <div className="flex flex-col">
-                    {message?.user?.id ===
-                    messages[index - 1]?.user?.id ? null : (
-                      <span className="font-bold">
-                        {message?.user?.firstName +
-                          " " +
-                          message?.user?.lastName}
-                      </span>
-                    )}
-                    <span className="text-sm">{message?.message}</span>
+                    {msg?.user?.id === messages[index - 1]?.user?.id ? null : <span className="font-bold">{msg?.user?.firstName + " " + msg?.user?.lastName}</span>}
+                    <span className="text-sm">{msg?.message}</span>
                   </div>
                 </div>
-                {message?.user?.id === messages[index + 1]?.user?.id ? null : (
-                  <Separator className="my-1" />
-                )}
+                {msg?.user?.id === messages[index + 1]?.user?.id ? null : <Separator className="my-1" />}
               </React.Fragment>
             );
           })}

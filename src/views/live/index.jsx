@@ -35,6 +35,7 @@ const Live = () => {
   const [firstDialog, setFirstDialog] = useState(true);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [remoteUser, setRemoteUser] = useState(null);
 
   useEffect(() => {
     if (firstDialog) return;
@@ -43,10 +44,31 @@ const Live = () => {
     socketRef.current = io.connect(SOCKET_SERVER_URL);
     pcRef.current = new RTCPeerConnection(pc_config);
 
+    socketRef.current.on("connect", () => {
+      toast({
+        title: "Bağlantı başarılı",
+        variant: "success",
+        duration: 2000,
+      });
+    });
+
+    socketRef.current.on("disconnect", () => {
+      toast({
+        title: "Bağlantı kesildi",
+        variant: "error",
+        duration: 2000,
+      });
+    });
+
+    socketRef.current.on("receive_message", ({ user, message }) => {
+      setMessages((messages) => [...messages, { user, message }]);
+    });
+
     socketRef.current.on("all_users", (users) => {
       console.log("all_users", users);
       if (users.length > 0) {
         createOffer();
+        setRemoteUser(users[0].user);
       }
     });
 
@@ -65,6 +87,10 @@ const Live = () => {
       if (!pcRef.current) return;
       await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
       console.log("candidate add success");
+    });
+
+    socketRef.current.on("remoteUser", (user) => {
+      setRemoteUser(user);
     });
 
     startVideo();
@@ -163,6 +189,20 @@ const Live = () => {
     },
   ];
 
+  const sendMessage = () => {
+    if (!message) return;
+    if (!(socketRef.current && pcRef.current)) return;
+    socketRef.current.emit("send_message", {
+      user: {
+        firstName: firstName,
+        lastName: lastName,
+        avatar: avatar,
+      },
+      message: message,
+    });
+    setMessage("");
+  };
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row gap-4">
       {firstDialog ? (
@@ -229,18 +269,32 @@ const Live = () => {
       ) : (
         <React.Fragment>
           <Card className="w-full h-1/3 lg:h-full flex flex-col flex-grow">
-            <CardContent className="p-2 gap-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 w-full flex-auto overflow-y-auto">
-              <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-full" />
-              <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full" />
+            <CardContent className="p-2 gap-2 grid grid-cols-1 md:grid-cols-2 w-full flex-auto overflow-y-auto content-center">
+              <div className="flex w-auto h-auto m-auto">
+                <div className="w-full h-full relative">
+                  <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-auto rounded-lg" />
+                  <div className="absolute bottom-2 w-full px-4">
+                    <div className="w-full h-auto bg-white bg-opacity-40 rounded-full p-1 text-center">
+                      <span className="text-black font-bold">{firstName + " " + lastName}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {remoteUser ? (
+                <div className="flex w-auto h-auto m-auto">
+                  <div className="w-full h-full relative">
+                    <video ref={remoteVideoRef} autoPlay playsInline muted className="w-full h-auto rounded-lg" />
+                    <div className="absolute bottom-2 w-full px-4">
+                      <div className="w-full h-auto bg-white bg-opacity-40 rounded-full p-1 text-center">
+                        <span className="text-black font-bold">{remoteUser?.firstName + " " + remoteUser?.lastName}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
             </CardContent>
           </Card>
-          {/* <Chat
-            myId={myId}
-            messages={messages}
-            sendMessage={sendMessage}
-            message={message}
-            setMessage={setMessage}
-          /> */}
+          <Chat myId={socketRef.current?.id} messages={messages} sendMessage={sendMessage} message={message} setMessage={setMessage} />
         </React.Fragment>
       )}
     </div>

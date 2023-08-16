@@ -38,6 +38,16 @@ io.on("connection", (socket) => {
     console.log(usersInThisRoom);
 
     io.sockets.to(socket.id).emit("all_users", usersInThisRoom);
+    socket.broadcast.emit("remoteUser", data.user);
+    const roomID = socketToRoom[socket.id];
+    let room = users[roomID];
+
+    socket.broadcast.to(room).emit("remoteUser", data.user);
+  });
+
+  socket.on("send_message", (data) => {
+    console.log("send_message : " + socket.id);
+    io.sockets.emit("receive_message", { message: data.message, user: { id: socket.id, ...data.user } });
   });
 
   socket.on("offer", (sdp) => {
