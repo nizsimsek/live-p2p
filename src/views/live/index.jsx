@@ -283,7 +283,7 @@ const Live = () => {
               {remoteUser ? (
                 <div className="flex w-auto h-auto m-auto">
                   <div className="w-full h-full relative">
-                    <video ref={remoteVideoRef} autoPlay playsInline muted className="w-full h-auto rounded-lg" />
+                    <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-auto rounded-lg" />
                     <div className="absolute bottom-2 w-full px-4">
                       <div className="w-full h-auto bg-white bg-opacity-40 rounded-full p-1 text-center">
                         <span className="text-black font-bold">{remoteUser?.firstName + " " + remoteUser?.lastName}</span>
