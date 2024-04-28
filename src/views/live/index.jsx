@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useParams } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -31,7 +38,9 @@ const Live = () => {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [avatar, setAvatar] = useState("https://robohash.org/odioeahic.png?size=300x300&set=set1");
+  const [avatar, setAvatar] = useState(
+    "https://robohash.org/odioeahic.png?size=300x300&set=set1"
+  );
   const [firstDialog, setFirstDialog] = useState(true);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -107,7 +116,10 @@ const Live = () => {
 
   const startVideo = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
       if (localVideoRef.current) localVideoRef.current.srcObject = stream;
       if (!(pcRef.current && socketRef.current)) return;
 
@@ -137,7 +149,10 @@ const Live = () => {
         }
       };
 
-      socketRef.current.emit("join_room", { roomId, user: { firstName, lastName, avatar } });
+      socketRef.current.emit("join_room", {
+        roomId,
+        user: { firstName, lastName, avatar },
+      });
     } catch (error) {
       console.error("startVideo Error : ", error);
     }
@@ -148,7 +163,10 @@ const Live = () => {
     if (!(pcRef.current && socketRef.current)) return;
 
     try {
-      const sdp = await pcRef.current.createOffer({ offerToReceiveVideo: true, offerToReceiveAudio: true });
+      const sdp = await pcRef.current.createOffer({
+        offerToReceiveVideo: true,
+        offerToReceiveAudio: true,
+      });
       await pcRef.current.setLocalDescription(new RTCSessionDescription(sdp));
       socketRef.current.emit("offer", sdp);
     } catch (error) {
@@ -161,7 +179,10 @@ const Live = () => {
     try {
       await pcRef.current.setRemoteDescription(new RTCSessionDescription(sdp));
       console.log("answer set remote description success");
-      const mySdp = await pcRef.current.createAnswer({ offerToReceiveVideo: true, offerToReceiveAudio: true });
+      const mySdp = await pcRef.current.createAnswer({
+        offerToReceiveVideo: true,
+        offerToReceiveAudio: true,
+      });
       console.log("create answer success");
       await pcRef.current.setLocalDescription(new RTCSessionDescription(mySdp));
       socketRef.current.emit("answer", mySdp);
@@ -209,7 +230,9 @@ const Live = () => {
         <Card className="w-full max-w-lg h-auto m-auto bg-slate-200">
           <CardHeader className="text-center">
             <CardTitle>Odaya Katıl</CardTitle>
-            <CardDescription>Odaya katılmak için bilgilerinizi giriniz</CardDescription>
+            <CardDescription>
+              Odaya katılmak için bilgilerinizi giriniz
+            </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             <Label htmlFor="firstName">Adınızı giriniz</Label>
@@ -235,7 +258,12 @@ const Live = () => {
               {avatarLinks.map((avatarLink) => {
                 return (
                   <img
-                    className={"w-20 h-20 rounded-full hover:cursor-pointer" + (avatar === avatarLink.link ? " outline outline-2 outline-green-400" : "")}
+                    className={
+                      "w-20 h-20 rounded-full hover:cursor-pointer" +
+                      (avatar === avatarLink.link
+                        ? " outline outline-2 outline-green-400"
+                        : "")
+                    }
                     key={avatarLink.id}
                     src={avatarLink.link}
                     alt="avatar"
@@ -253,7 +281,8 @@ const Live = () => {
                 if (firstName?.length < 3 || lastName?.length < 3) {
                   toast({
                     title: "Hata",
-                    description: "Adınız ve soyadınız en az 3 karakter olmalıdır",
+                    description:
+                      "Adınız ve soyadınız en az 3 karakter olmalıdır",
                     variant: "destructive",
                     duration: 3000,
                   });
@@ -270,23 +299,44 @@ const Live = () => {
         <React.Fragment>
           <Card className="w-full h-1/3 lg:h-full flex flex-col flex-grow">
             <CardContent className="p-2 gap-2 grid grid-cols-1 md:grid-cols-2 w-full flex-auto overflow-y-auto content-center">
-              <div className="flex w-auto h-auto m-auto">
+              <div className="flex w-full h-auto m-auto">
                 <div className="w-full h-full relative">
-                  <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-auto rounded-lg" />
+                  <video
+                    ref={localVideoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="w-full h-auto rounded-lg"
+                    style={{
+                      transform: "scaleX(-1)",
+                    }}
+                  />
                   <div className="absolute bottom-2 w-full px-4">
                     <div className="w-full h-auto bg-white bg-opacity-40 rounded-full p-1 text-center">
-                      <span className="text-black font-bold">{firstName + " " + lastName}</span>
+                      <span className="text-black font-bold">
+                        {firstName + " " + lastName}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
               {remoteUser ? (
-                <div className="flex w-auto h-auto m-auto">
+                <div className="flex w-full h-auto m-auto">
                   <div className="w-full h-full relative">
-                    <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-auto rounded-lg" />
+                    <video
+                      ref={remoteVideoRef}
+                      autoPlay
+                      playsInline
+                      className="w-full h-auto rounded-lg"
+                      style={{
+                        transform: "scaleX(-1)",
+                      }}
+                    />
                     <div className="absolute bottom-2 w-full px-4">
                       <div className="w-full h-auto bg-white bg-opacity-40 rounded-full p-1 text-center">
-                        <span className="text-black font-bold">{remoteUser?.firstName + " " + remoteUser?.lastName}</span>
+                        <span className="text-black font-bold">
+                          {remoteUser?.firstName + " " + remoteUser?.lastName}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -294,7 +344,13 @@ const Live = () => {
               ) : null}
             </CardContent>
           </Card>
-          <Chat myId={socketRef.current?.id} messages={messages} sendMessage={sendMessage} message={message} setMessage={setMessage} />
+          <Chat
+            myId={socketRef.current?.id}
+            messages={messages}
+            sendMessage={sendMessage}
+            message={message}
+            setMessage={setMessage}
+          />
         </React.Fragment>
       )}
     </div>
