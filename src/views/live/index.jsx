@@ -25,7 +25,7 @@ const pc_config = {
   ],
 };
 
-const SOCKET_SERVER_URL = "https://socketio.nizamettinsimsek.com";
+const SOCKET_SERVER_URL = "https://socketio.nizamettinsimsek.com.tr";
 
 const Live = () => {
   let { roomId } = useParams();
