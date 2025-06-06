@@ -25,7 +25,7 @@ const pc_config = {
   ],
 };
 
-const SOCKET_SERVER_URL = "https://socketio.nizamettinsimsek.com.tr";
+const SOCKET_SERVER_URL = "https://live-socket.nizsimsek.dev";
 
 const Live = () => {
   let { roomId } = useParams();
@@ -225,9 +225,9 @@ const Live = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col lg:flex-row gap-4">
+    <div className="flex flex-col w-full h-full gap-4 lg:flex-row">
       {firstDialog ? (
-        <Card className="w-full max-w-lg h-auto m-auto bg-slate-200">
+        <Card className="w-full h-auto max-w-lg m-auto bg-slate-200">
           <CardHeader className="text-center">
             <CardTitle>Odaya Katıl</CardTitle>
             <CardDescription>
@@ -297,10 +297,10 @@ const Live = () => {
         </Card>
       ) : (
         <React.Fragment>
-          <Card className="w-full h-1/3 lg:h-full flex flex-col flex-grow">
-            <CardContent className="p-2 gap-2 grid grid-cols-1 md:grid-cols-2 w-full flex-auto overflow-y-auto content-center">
+          <Card className="flex flex-col flex-grow w-full h-1/3 lg:h-full">
+            <CardContent className="grid content-center flex-auto w-full grid-cols-1 gap-2 p-2 overflow-y-auto md:grid-cols-2">
               <div className="flex w-full h-auto m-auto">
-                <div className="w-full h-full relative">
+                <div className="relative w-full h-full">
                   <video
                     ref={localVideoRef}
                     autoPlay
@@ -311,9 +311,9 @@ const Live = () => {
                       transform: "scaleX(-1)",
                     }}
                   />
-                  <div className="absolute bottom-2 w-full px-4">
-                    <div className="w-full h-auto bg-white bg-opacity-40 rounded-full p-1 text-center">
-                      <span className="text-black font-bold">
+                  <div className="absolute w-full px-4 bottom-2">
+                    <div className="w-full h-auto p-1 text-center bg-white rounded-full bg-opacity-40">
+                      <span className="font-bold text-black">
                         {firstName + " " + lastName}
                       </span>
                     </div>
@@ -322,7 +322,7 @@ const Live = () => {
               </div>
               {remoteUser ? (
                 <div className="flex w-full h-auto m-auto">
-                  <div className="w-full h-full relative">
+                  <div className="relative w-full h-full">
                     <video
                       ref={remoteVideoRef}
                       autoPlay
@@ -332,9 +332,9 @@ const Live = () => {
                         transform: "scaleX(-1)",
                       }}
                     />
-                    <div className="absolute bottom-2 w-full px-4">
-                      <div className="w-full h-auto bg-white bg-opacity-40 rounded-full p-1 text-center">
-                        <span className="text-black font-bold">
+                    <div className="absolute w-full px-4 bottom-2">
+                      <div className="w-full h-auto p-1 text-center bg-white rounded-full bg-opacity-40">
+                        <span className="font-bold text-black">
                           {remoteUser?.firstName + " " + remoteUser?.lastName}
                         </span>
                       </div>
